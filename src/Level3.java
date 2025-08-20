@@ -1,5 +1,7 @@
 import bagel.*;
-
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ public class Level3 extends Level {
     private final ArrayList<Arrow> arrows;
     private int numArrows = 0;
     private int currArrow = 0;
+    private Clip track;
 
     /**
      * A constructor that reads the csv file of level2 and stores the lanes in the array.
@@ -24,6 +27,18 @@ public class Level3 extends Level {
         enemies = new ArrayList<>();
         guardian = new Guardian();
         arrows = new ArrayList<>();
+
+        try {
+            File file = new File("res/track3.wav");
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+            track = AudioSystem.getClip();
+            track.open(audioStream);
+            track.loop(Clip.LOOP_CONTINUOUSLY); // loop indefinitely
+            track.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+
         try (BufferedReader br = new BufferedReader(new FileReader("res/level3.csv"))) {
             String textRead;
             while ((textRead = br.readLine()) != null) {
